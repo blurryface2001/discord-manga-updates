@@ -1,5 +1,6 @@
 import config from "./config.js";
 import { Client } from "discord.js";
+import http from "http";
 import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
 
@@ -41,3 +42,9 @@ setInterval(async () => {
 }, 60000);
 
 client.login(config.DISCORD_TOKEN);
+http
+  .createServer(function (req, res) {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("Hello World\n");
+  })
+  .listen(process.env.PORT);
