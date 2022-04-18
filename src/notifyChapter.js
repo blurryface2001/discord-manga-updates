@@ -21,7 +21,7 @@ export default async function checkForNewChap() {
         postTitle.toLowerCase().includes("disc")
       ) {
         const created = post.data.created;
-        if (new Date().getTime() / 1000 - created < 58) {
+        if (new Date().getTime() / 1000 - created < 1800) {
           manga = { ...manga, url: post.data.url };
           newChap.push(manga);
         }
