@@ -12,21 +12,46 @@ export const data = new SlashCommandBuilder()
       .addChoices(Array.from(tags))
   );
 
-export async function execute(interaction) {
-  const tag = interaction.options.getString("genre");
+function formatMessage(mangas) {
+  const messages = [];
 
   let message = "";
 
-  const mangas = await listManga(tag);
+  mangas.forEach((manga, idx) => {
+    message += `${idx + 1}. ${manga.name} - ${manga.url}\n`;
+    if (message.length > 1700) {
+      messages.push(message);
+      message = "";
+    }
+  });
 
-  if (mangas.length === 0) {
-    message = `🚫 No manga found from the genre: ${tag}`;
-  } else {
-    message = `📃 List of mangas from the genre:  ${tag}\n`;
-    message += mangas
-      .map((manga, idx) => `${idx + 1}. ${manga.name} - ${manga.url}`)
-      .join("\n");
+  if (message.length > 0) {
+    messages.push(message);
   }
 
-  interaction.reply(message);
+  return messages;
+}
+
+export async function execute(interaction, client) {
+  const tag = interaction.options.getString("genre");
+
+  const mangas = await listManga(tag);
+
+  // Discord doesn't allow messages with more than 2000 characters
+  // so we need to split the messages into multiple messages
+  const formattedMangas = formatMessage(mangas);
+
+  if (mangas.length === 0) {
+    interaction.reply(
+      `🚫 No manga found from the genre: ${tag !== null ? tag : "all"}`
+    );
+  } else {
+    interaction.reply(
+      `📃 List of mangas from the genre: ${tag !== null ? tag : "all"}`
+    );
+  }
+
+  formattedMangas.forEach((message) => {
+    client.channels.cache.get(interaction.channel.id).send(message);
+  });
 }
