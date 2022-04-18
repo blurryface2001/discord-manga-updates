@@ -17,8 +17,8 @@ export default async function checkForNewChap() {
     const postTitle = post.data.title.toLowerCase();
     for (let manga of mangaList) {
       if (
-        postTitle.toLowerCase().includes(manga.name.toLowerCase()) &&
-        postTitle.toLowerCase().includes("disc")
+        postTitle.toLowerCase().includes(manga.name.toLowerCase()) // &&
+        // postTitle.toLowerCase().includes("disc")
       ) {
         const created = post.data.created;
         const now = new Date().getTime() / 1000;
