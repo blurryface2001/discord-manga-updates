@@ -3,7 +3,8 @@ import { Client } from "discord.js";
 import http from "http";
 import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
-
+// TODO: Add cover photo to the airtable field
+// TODO: Split messages into multiple messages if they are too long
 export const client = new Client({
   intents: [
     "GUILDS",
@@ -22,12 +23,13 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
-  commands[commandName].execute(interaction);
+  commands[commandName].execute(interaction, client);
 });
 
 setInterval(async () => {
   console.log("🔃 Fetching new chapters....");
   const newChap = await checkForNewChap();
+  console.log(newChap);
   if (newChap.length > 0) {
     newChap.map((chap) => {
       let message = `${
