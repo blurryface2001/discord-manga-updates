@@ -33,7 +33,9 @@ setInterval(async () => {
     newChap.map((chap) => {
       let message = `${
         chap.isImportant ? "<@786569518256226325> " : ""
-      }📃 New chapter of ${chap.name} is available! \n${chap.url}`;
+      }📃 New chapter of ${chap.name} is available! \nDiscussion: <${
+        chap.reddit_link
+      }> \n\n${chap.url}`;
       client.channels.cache.get("965269327580381304").send(message);
     });
     console.log("🎉 New chapters found!");
