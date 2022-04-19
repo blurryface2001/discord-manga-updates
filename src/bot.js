@@ -3,8 +3,7 @@ import { Client } from "discord.js";
 import http from "http";
 import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
-// TODO: Add cover photo to the airtable field
-// TODO: Split messages into multiple messages if they are too long
+
 export const client = new Client({
   intents: [
     "GUILDS",
@@ -41,7 +40,7 @@ setInterval(async () => {
   } else {
     console.log("💥 No new chapters found!");
   }
-}, 60000);
+}, 600000); // Runs every 10 minutes
 
 client.login(config.DISCORD_TOKEN);
 http
