@@ -11,7 +11,6 @@ export default async function listManga(genre) {
 
     base("collection")
       .select({
-        maxRecords: 100,
         view: "Grid view",
         fields: ["name", "url", "genre", "isImportant"],
       })
