@@ -31,7 +31,11 @@ export default async function checkForNewChap() {
         });
 
         if (diff < 618) {
-          manga = { ...manga, url: post.data.url };
+          manga = {
+            ...manga,
+            url: post.data.url,
+            reddit_link: `https://reddit.com/${post.data.id}`,
+          };
           newChap.push(manga);
         }
       }
