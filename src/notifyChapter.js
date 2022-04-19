@@ -22,8 +22,15 @@ export default async function checkForNewChap() {
       ) {
         const created = post.data.created;
         const now = new Date().getTime() / 1000;
-        console.log({manga: manga.name, now, created, differnce: now - created})
-        if (now < 62) {
+        const diff = now - created;
+        console.log({
+          manga: manga.name,
+          now,
+          created,
+          differnce: now - created,
+        });
+
+        if (diff < 618) {
           manga = { ...manga, url: post.data.url };
           newChap.push(manga);
         }
