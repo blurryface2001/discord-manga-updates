@@ -23,13 +23,13 @@ export const data = new SlashCommandBuilder()
     input
       .setName("genre")
       .setDescription("Genre of the manga")
-      .addChoice("Isekai", "isekai")
-      .addChoice("Romance", "romance")
-      .addChoice("Fantasy", "fantasy")
-      .addChoice("Otome", "otome")
+      .addChoice("Isekai", "Isekai")
+      .addChoice("Romance", "Romance")
+      .addChoice("Fantasy", "Fantasy")
+      .addChoice("Otome", "Otome")
   );
 
-export async function execute(interaction) {
+export async function execute(interaction, client) {
   const mangaName = interaction.options.getString("name");
   const mangaGenre = interaction.options.getString("genre");
   const mangaUrl = interaction.options.getString("url");
