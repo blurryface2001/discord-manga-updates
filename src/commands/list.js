@@ -18,7 +18,7 @@ function formatMessage(mangas) {
   let message = "";
 
   mangas.forEach((manga, idx) => {
-    message += `${idx + 1}. ${manga.name} - ${manga.url}\n`;
+    message += `${idx + 1}. ${manga.name} - <${manga.url}>\n\n`;
     if (message.length > 1700) {
       messages.push(message);
       message = "";
