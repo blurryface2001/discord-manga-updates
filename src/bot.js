@@ -3,6 +3,8 @@ import { Client } from "discord.js";
 import http from "http";
 import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
+import votePost from "./votePost.js";
+import sendChannelMessage from "./sendChannelMessage.js";
 
 export const client = new Client({
   intents: [
@@ -11,6 +13,7 @@ export const client = new Client({
     "DIRECT_MESSAGES",
     "GUILD_MESSAGE_REACTIONS",
   ],
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
 });
 
 client.once("ready", () => {
@@ -22,7 +25,31 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
-  commands[commandName].execute(interaction, client);
+  try {
+    commands[commandName].execute(interaction, client);
+  } catch (error) {
+    console.error(error);
+    sendChannelMessage(
+      client,
+      "966622664800215040",
+      `💥 Error while executing a command: ${commandName}! \n\n` + error
+    );
+  }
+});
+
+client.on("messageReactionAdd", async (reaction, user) => {
+  // When a reaction is received, check if the structure is partial
+  if (reaction.partial) {
+    // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
+    try {
+      await reaction.fetch();
+    } catch (error) {
+      console.error("Something went wrong when fetching the message:", error);
+      return;
+    }
+  }
+
+  votePost(reaction, client);
 });
 
 setInterval(async () => {
@@ -36,7 +63,7 @@ setInterval(async () => {
       }📃 New chapter of ${chap.name} is available! \nDiscussion: <${
         chap.reddit_link
       }> \n\n${chap.url}`;
-      client.channels.cache.get("965269327580381304").send(message);
+      sendChannelMessage(client, "965269327580381304", message);
     });
     console.log("🎉 New chapters found!");
   } else {
@@ -45,8 +72,21 @@ setInterval(async () => {
 }, 600000); // Runs every 10 minutes
 
 client.login(config.DISCORD_TOKEN);
+
 http
   .createServer(function (req, res) {
+    if (req.url === "/kill") {
+      try {
+        client.destroy();
+        console.log("🤖 Bot is now dead!");
+        res.writeHead(200, { "Content-Type": "text/plain" });
+        return res.end("✅ Bot is now dead!");
+      } catch (error) {
+        console.log(error);
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        return res.end("💥 Something went wrong, could not kill the bot!");
+      }
+    }
     res.writeHead(200, { "Content-Type": "text/plain" });
     res.end("Hello World\n");
   })
