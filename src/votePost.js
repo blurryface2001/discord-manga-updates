@@ -15,6 +15,9 @@ export default async function votePost(reaction, client) {
   const url = content.match(/(?<=Discussion: <)(.*)(?=>)/)[0].trim();
   const id = url.split("/")[3];
 
+  console.log("🔃 Voting for: ", title);
+  sendChannelMessage(client, "966631308245741598", `🔃 Voting for: ${title}`);
+
   try {
     // Launch the browser
     const browser = await puppeteer.launch();
