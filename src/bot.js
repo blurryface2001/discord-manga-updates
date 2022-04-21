@@ -38,11 +38,9 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.on("messageReactionAdd", async (reaction, user) => {
-  // When a reaction is received, check if the structure is partial
   if (reaction.partial) {
-    // If the message this reaction belongs to was removed, the fetching might result in an API error which should be handled
     try {
-      await reaction.fetch();
+      await reaction.fetch(); // Partial messages are fetched
     } catch (error) {
       console.error("Something went wrong when fetching the message:", error);
       return;
@@ -54,8 +52,14 @@ client.on("messageReactionAdd", async (reaction, user) => {
 
 setInterval(async () => {
   console.log("🔃 Fetching new chapters....");
+  sendChannelMessage(
+    client,
+    "966631308245741598",
+    "🔃 Fetching new chapters...."
+  );
   const newChap = await checkForNewChap();
   console.log(newChap);
+
   if (newChap.length > 0) {
     newChap.map((chap) => {
       let message = `${
@@ -63,10 +67,18 @@ setInterval(async () => {
       }📃 New chapter of ${chap.name} is available! \nDiscussion: <${
         chap.reddit_link
       }> \n\n${chap.url}`;
+
       sendChannelMessage(client, "965269327580381304", message);
     });
+
+    sendChannelMessage(client, "966631308245741598", "🎉 New chapters found!");
     console.log("🎉 New chapters found!");
   } else {
+    sendChannelMessage(
+      client,
+      "966631308245741598",
+      "💥 No new chapters found!"
+    );
     console.log("💥 No new chapters found!");
   }
 }, 600000); // Runs every 10 minutes
