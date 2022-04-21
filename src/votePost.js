@@ -46,7 +46,7 @@ export default async function votePost(reaction, client) {
       sendChannelMessage(
         client,
         "966631308245741598",
-        `⬇ Downvoted the mange: ${title}! \n\n${url}`
+        `⬇ Downvoted the manga: ${title}! \n\n${url}`
       );
     }
 
