@@ -1,5 +1,6 @@
 import config from "../../config.js";
 import Airtable from "airtable";
+import sendChannelMessage from "../../sendChannelMessage.js";
 
 const base = new Airtable({ apiKey: config.AIRTABLE_KEY }).base(
   "appkV9F4scpEvGZEM"
