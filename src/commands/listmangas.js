@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import sendChannelMessage from "../sendChannelMessage.js";
 import tags from "./data/tags.js";
 import fetchMangas from "./lib/fetchMangas.js";
 
