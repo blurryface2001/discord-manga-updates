@@ -9,9 +9,7 @@ const headers = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.55",
 };
 
-let newChap = [];
-
-async function checkForNewMangaChap() {
+async function checkForNewMangaChap(newChap) {
   let mangaList = await fetchMangas(null);
 
   const posts = await (
@@ -41,9 +39,10 @@ async function checkForNewMangaChap() {
       }
     }
   }
+  return newChap;
 }
 
-async function checkForNewManhwaChap() {
+async function checkForNewManhwaChap(newChap) {
   const manhwaList = await fetchManhwas(null);
   const chapters = [];
 
@@ -113,12 +112,16 @@ async function checkForNewManhwaChap() {
   });
 
   newChap = [...newChap, ...uniqueChapters];
+
+  return newChap;
 }
 
 export default async function checkForNewChap() {
+  let newChap = [];
+
   try {
-    await checkForNewMangaChap();
-    await checkForNewManhwaChap();
+    newChap = await checkForNewMangaChap(newChap);
+    newChap = await checkForNewManhwaChap(newChap);
   } catch (error) {
     console.log(error);
 
