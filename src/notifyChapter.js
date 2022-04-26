@@ -9,6 +9,10 @@ const headers = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.55",
 };
 
+function wait(amount) {
+  return new Promise((resolve) => setTimeout(resolve, amount));
+}
+
 async function checkForNewMangaChap(newChap) {
   let mangaList = await fetchMangas(null);
 
@@ -75,6 +79,8 @@ async function checkForNewManhwaChap(newChap) {
           });
         }
       }
+      // Wait 0.3s before next request
+      await wait(330);
     }
 
     // Get the latest chapter from bato
@@ -116,7 +122,7 @@ async function checkForNewManhwaChap(newChap) {
   return newChap;
 }
 
-export default async function checkForNewChap() {
+export default async function checkForNewChap(client) {
   let newChap = [];
 
   try {
