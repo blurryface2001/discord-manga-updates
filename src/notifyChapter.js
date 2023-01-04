@@ -1,12 +1,12 @@
-import axios from "axios";
-import { parseStringPromise } from "xml2js";
-import fetchMangas from "./commands/lib/fetchMangas.js";
-import fetchManhwas from "./commands/lib/fetchManhwas.js";
-import sendChannelMessage from "./sendChannelMessage.js";
+import axios from 'axios';
+import { parseStringPromise } from 'xml2js';
+import fetchMangas from './commands/lib/fetchMangas.js';
+import fetchManhwas from './commands/lib/fetchManhwas.js';
+import sendChannelMessage from './sendChannelMessage.js';
 
 const headers = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.55",
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.55',
 };
 
 function wait(amount) {
@@ -17,7 +17,7 @@ async function checkForNewMangaChap(newChap) {
   let mangaList = await fetchMangas(null);
 
   const posts = await (
-    await axios.get("https://www.reddit.com/r/manga/new.json?limit=10", headers)
+    await axios.get('https://www.reddit.com/r/manga/new.json?limit=10', headers)
   ).data.data.children;
 
   for (const post of posts) {
@@ -36,7 +36,7 @@ async function checkForNewMangaChap(newChap) {
           manga = {
             ...manga,
             url: post.data.url,
-            reddit_link: `https://reddit.com/${post.data.id}`,
+            reddit_link: `https://reddit.com${post.data.permalink}`,
           };
           newChap.push(manga);
         }
@@ -61,7 +61,7 @@ async function checkForNewManhwaChap(newChap) {
       const publishedAtSince = now
         .toISOString()
         .match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)[0];
-      const id = mangadexURL.split("/")[4];
+      const id = mangadexURL.split('/')[4];
       const data = await (
         await axios.get(
           `https://api.mangadex.org/manga/${id}/feed?createdAtSince=${publishedAtSince}`
@@ -70,7 +70,7 @@ async function checkForNewManhwaChap(newChap) {
 
       if (data.length > 0) {
         for (const chap of data) {
-          if (chap.attributes.translatedLanguage !== "en") continue;
+          if (chap.attributes.translatedLanguage !== 'en') continue;
 
           chapters.push({
             ...manhwa,
@@ -85,7 +85,7 @@ async function checkForNewManhwaChap(newChap) {
 
     // Get the latest chapter from bato
     if (batoURL) {
-      const rssId = batoURL.split("/")[4];
+      const rssId = batoURL.split('/')[4];
       const rssFeed = `https://batotoo.com/rss/series/${rssId}.xml`;
 
       const data = await (await axios.get(rssFeed)).data;
@@ -134,7 +134,7 @@ export default async function checkForNewChap(client) {
     // Send error to #error-logs channel
     sendChannelMessage(
       client,
-      "966622664800215040",
+      '966622664800215040',
       `💥 Error fetching new chap :\n\n${error}`
     );
   }
