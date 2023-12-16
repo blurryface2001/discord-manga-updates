@@ -13,7 +13,7 @@ export default async function votePost(reaction, client) {
     .match(/(?<=New chapter of)(.*)(?=is available!)/)[0]
     .trim();
   const url = content.match(/(?<=Discussion: <)(.*)(?=>)/)[0].trim();
-  const id = url.split("/")[3];
+  const id = url.split("https://reddit.com/r/manga/comments/")[1].split("/")[0];
 
   console.log("🔃 Voting for: ", title);
   sendChannelMessage(client, "966631308245741598", `🔃 Voting for: ${title}`);

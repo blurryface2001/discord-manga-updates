@@ -57,16 +57,30 @@ setInterval(async () => {
     "966631308245741598",
     "🔃 Fetching new chapters...."
   );
-  const newChap = await checkForNewChap(client);
-  console.log(newChap);
+  const { newChap, newAnime } = await checkForNewChap(client);
+  console.log({ newChap, newAnime });
 
   if (newChap.length > 0) {
     newChap.map((chap) => {
+      // Personalize message according post type (disc, art, news)
+      const postTitle = chap.postTitle.toLowerCase();
       let message = `${
-        chap.isImportant ? "<@786569518256226325> " : ""
-      }📃 New chapter of ${chap.name} is available! \nDiscussion: <${
-        chap.reddit_link
-      }> \n\n${chap.url}`;
+        chap.isImportant && postTitle.includes("disc")
+          ? "<@786569518256226325> "
+          : ""
+      }${
+        (postTitle.includes("disc") && "📃") ||
+        (postTitle.includes("art") && "🎨") ||
+        (postTitle.includes("news") && "📰") ||
+        "📝"
+      } New ${
+        (postTitle.includes("disc") && "chapter") ||
+        (postTitle.includes("art") && "art") ||
+        (postTitle.includes("news") && "news") ||
+        "post"
+      } of ${chap.name} is available! \nTitle: ${
+        chap.postTitle
+      } \nDiscussion: <${chap.reddit_link}> \n\n${chap.url}`;
 
       // Send message to #new-manga channel
       sendChannelMessage(client, "965269327580381304", message);
@@ -83,6 +97,31 @@ setInterval(async () => {
       "💥 No new chapters found!"
     );
     console.log("💥 No new chapters found!");
+  }
+
+  if (newAnime.length > 0) {
+    newAnime.map((anime) => {
+      let message = `${
+        anime.isImportant ? "<@786569518256226325> " : ""
+      }📺 New episode of ${anime.name} is available!\n Episode no.: ${
+        anime.number
+      } \n\n${anime.url}`;
+
+      // Send message to #new-anime channel
+      sendChannelMessage(client, "1185688766061490176", message);
+    });
+
+    // Send message to #access-logs channel
+    sendChannelMessage(client, "966631308245741598", "🎉 New chapters found!");
+    console.log("🎉 New anime episodes found!");
+  } else {
+    // Send message to #access-logs channel
+    sendChannelMessage(
+      client,
+      "966631308245741598",
+      "💥 No new chapters found!"
+    );
+    console.log("💥 No new anime episodes found!");
   }
 }, 600000); // Runs every 10 minutes
 

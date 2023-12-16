@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import getMangaTags from "./utils/getMangaTags.js";
 import addMangaToAirTable from "./lib/addMangaToAirTable.js";
+import sendChannelMessage from "../sendChannelMessage.js";
 
 export const data = new SlashCommandBuilder()
   .setName("addmanga")
@@ -35,9 +36,18 @@ export async function execute(interaction, client) {
   const mangaUrl = interaction.options.getString("url");
   const isImportant = interaction.options.getBoolean("important");
 
-  let tags;
+  let tags = [];
   if (mangaUrl) {
-    tags = await getMangaTags(mangaUrl);
+    try {
+      tags = await getMangaTags(mangaUrl);
+    } catch (error) {
+      // Send error to #error-logs channel
+      sendChannelMessage(
+        client,
+        "966622664800215040",
+        `💥 Error fetching manga tags :\n\n${error}`
+      );
+    }
     if (mangaGenre !== null) {
       tags = [...tags, mangaGenre];
     }

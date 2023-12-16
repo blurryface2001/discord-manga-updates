@@ -1,5 +1,9 @@
 export * as ping from "./ping.js";
 export * as listmangas from "./listmangas.js";
 export * as listmanhwas from "./listmanhwas.js";
+export * as listasura from "./listasura.js";
+export * as listanime from "./listanime.js";
 export * as addmanga from "./addmanga.js";
 export * as addmanhwa from "./addmanhwa.js";
+export * as addasura from "./addasura.js"
+export * as addanime from "./addanime.js"
