@@ -119,7 +119,7 @@ setInterval(async () => {
     sendChannelMessage(
       client,
       "966631308245741598",
-      "💥 No new chapters found!"
+      "💥 No new anime episodes found!"
     );
     console.log("💥 No new anime episodes found!");
   }
