@@ -112,7 +112,7 @@ setInterval(async () => {
     });
 
     // Send message to #access-logs channel
-    sendChannelMessage(client, "966631308245741598", "🎉 New chapters found!");
+    sendChannelMessage(client, "966631308245741598", "🎉 New anime episodes found!");
     console.log("🎉 New anime episodes found!");
   } else {
     // Send message to #access-logs channel
