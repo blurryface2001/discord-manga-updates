@@ -10,7 +10,7 @@ export default async function votePost(reaction, client) {
   const { content } = reaction.message;
 
   const title = content
-    .match(/(?<=New chapter of)(.*)(?=is available!)/)[0]
+    .match(/(?<=New (chapter|art|news|post) of)(.*)(?=is available!)/)[0]
     .trim();
   const url = content.match(/(?<=Discussion: <)(.*)(?=>)/)[0].trim();
   const id = url.split("https://reddit.com/r/manga/comments/")[1].split("/")[0];

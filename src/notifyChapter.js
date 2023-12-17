@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import { parseStringPromise } from "xml2js";
 import fetchMangas from "./commands/lib/fetchMangas.js";
 import fetchManhwas from "./commands/lib/fetchManhwas.js";
@@ -9,6 +10,18 @@ import updateAsuraLatestNum from "./commands/lib/updateAsuraLatestNum.js";
 import fetchAnime from "./commands/lib/fetchAnime.js";
 import scrapeTotalAnimeEpisode from "./commands/utils/scrapeTotalAnimeEpisode.js";
 import updateAnimeLatestNum from "./commands/lib/updateAnimeLatestNum.js";
+
+axiosRetry(axios, {
+  retries: 3, // number of retries
+  retryDelay: (retryCount) => {
+      console.log(`Retrying getting latest Reddit post attempt: ${retryCount}`);
+      return retryCount * 3000; // time interval between retries
+  },
+  retryCondition: (error) => {
+      // if retry condition is not specified, by default idempotent requests are retried
+      return error.response.status === 403;
+  },
+});
 
 const headers = {
   "User-Agent":
