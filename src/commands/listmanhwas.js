@@ -38,6 +38,7 @@ function formatMessage(manhwas) {
 }
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const tag = interaction.options.getString("genre");
 
   const manhwas = await fetchManhwas(tag);
@@ -47,11 +48,11 @@ export async function execute(interaction, client) {
   const formattedMangas = formatMessage(manhwas);
 
   if (manhwas.length === 0) {
-    interaction.reply(
+    await interaction.editReply(
       `🚫 No manhwa found from the genre: ${tag !== null ? tag : "all"}`
     );
   } else {
-    interaction.reply(
+    await interaction.editReply(
       `📃 List of manhwas from the genre: ${tag !== null ? tag : "all"}`
     );
   }

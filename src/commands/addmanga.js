@@ -31,6 +31,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const mangaName = interaction.options.getString("name");
   const mangaGenre = interaction.options.getString("genre");
   const mangaUrl = interaction.options.getString("url");
@@ -71,8 +72,8 @@ export async function execute(interaction, client) {
     if (mangaUrl) {
       message += `\n\n${mangaUrl}`;
     }
-    interaction.reply(message);
+    await interaction.editReply(message);
   } else {
-    interaction.reply("❌ Failed to add the manga to your collection.");
+    await interaction.editReply("❌ Failed to add the manga to your collection.");
   }
 }

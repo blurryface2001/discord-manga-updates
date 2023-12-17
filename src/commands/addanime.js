@@ -21,6 +21,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const animeName = interaction.options.getString("name");
   const animeaurlURL = interaction.options.getString("animeaurl");
   const isImportant = interaction.options.getBoolean("important");
@@ -35,8 +36,8 @@ export async function execute(interaction, client) {
   if (addAnime) {
     let message = `✅ Successfully added ${animeName} to your collection!`;
     message += `\n\n${animeaurlURL}`;
-    interaction.reply(message);
+    await interaction.editReply(message);
   } else {
-    interaction.reply("❌ Failed to add the anime to your collection.");
+    await interaction.editReply("❌ Failed to add the anime to your collection.");
   }
 }

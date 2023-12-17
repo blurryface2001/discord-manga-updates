@@ -31,6 +31,7 @@ function formatMessage(manhwas) {
 }
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   let manhwas;
   try {
     manhwas = await fetchAsuraManhwas();
@@ -49,9 +50,9 @@ export async function execute(interaction, client) {
   const formattedManhwas = formatMessage(manhwas);
 
   if (manhwas.length === 0) {
-    interaction.reply(`🚫 No manhwa found`);
+    await interaction.editReply(`🚫 No manhwa found`);
   } else {
-    interaction.reply(`📃 List of manhwas in Asura`);
+    await interaction.editReply(`📃 List of manhwas in Asura`);
   }
 
   formattedManhwas.forEach((message) => {

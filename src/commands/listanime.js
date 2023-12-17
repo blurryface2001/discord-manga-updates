@@ -32,6 +32,7 @@ function formatMessage(animes) {
 }
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   let animes;
   try {
     animes = await fetchAnime();
@@ -50,9 +51,9 @@ export async function execute(interaction, client) {
   const formattedManhwas = formatMessage(animes);
 
   if (animes.length === 0) {
-    interaction.reply(`🚫 No anime found`);
+    await interaction.editReply(`🚫 No anime found`);
   } else {
-    interaction.reply(`📃 List of animes`);
+    await interaction.editReply(`📃 List of animes`);
   }
 
   formattedManhwas.forEach((message) => {

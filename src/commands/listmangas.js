@@ -36,6 +36,7 @@ function formatMessage(mangas) {
 }
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const tag = interaction.options.getString("genre");
 
   let mangas;
@@ -57,11 +58,11 @@ export async function execute(interaction, client) {
   const formattedMangas = formatMessage(mangas);
 
   if (mangas.length === 0) {
-    interaction.reply(
+    await interaction.editReply(
       `🚫 No manga found from the genre: ${tag !== null ? tag : "all"}`
     );
   } else {
-    interaction.reply(
+    await interaction.editReply(
       `📃 List of mangas from the genre: ${tag !== null ? tag : "all"}`
     );
   }

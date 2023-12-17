@@ -25,6 +25,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const manhwaName = interaction.options.getString("name");
   const mangadexURL = interaction.options.getString("mangadexurl");
   const batoURL = interaction.options.getString("batourl");
@@ -62,8 +63,8 @@ export async function execute(interaction, client) {
     if (mangadexURL) {
       message += `\n\n${mangadexURL}`;
     }
-    interaction.reply(message);
+    await interaction.editReply(message);
   } else {
-    interaction.reply("❌ Failed to add the manhwa to your collection.");
+    await interaction.editReply("❌ Failed to add the manhwa to your collection.");
   }
 }

@@ -21,6 +21,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export async function execute(interaction, client) {
+  await interaction.deferReply();
   const manhwaName = interaction.options.getString("name");
   const asuraURL = interaction.options.getString("asuraurl");
   const isImportant = interaction.options.getBoolean("important");
@@ -35,8 +36,8 @@ export async function execute(interaction, client) {
   if (addAsura) {
     let message = `✅ Successfully added ${manhwaName} to your collection!`;
     message += `\n\n${asuraURL}`;
-    interaction.reply(message);
+    await interaction.editReply(message);
   } else {
-    interaction.reply("❌ Failed to add the manhwa to your collection.");
+    await interaction.editReply("❌ Failed to add the manhwa to your collection.");
   }
 }
