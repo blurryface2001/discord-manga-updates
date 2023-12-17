@@ -36,7 +36,7 @@ export async function execute(interaction, client) {
   const mangaUrl = interaction.options.getString("url");
   const isImportant = interaction.options.getBoolean("important");
 
-  let tags = [];
+  let tags;
   if (mangaUrl) {
     try {
       tags = await getMangaTags(mangaUrl);
@@ -48,6 +48,7 @@ export async function execute(interaction, client) {
         `💥 Error fetching manga tags :\n\n${error}`
       );
     }
+    
     if (mangaGenre !== null) {
       tags = [...tags, mangaGenre];
     }

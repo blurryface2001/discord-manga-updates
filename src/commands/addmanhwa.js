@@ -30,7 +30,23 @@ export async function execute(interaction, client) {
   const batoURL = interaction.options.getString("batourl");
   const isImportant = interaction.options.getBoolean("important");
 
-  const tags = await getMangaTags(mangadexURL);
+  let tags;
+  if (mangadexURL) {
+    try {
+      tags = await getMangaTags(mangadexURL);
+    } catch (error) {
+      tags = [];
+
+      // Send error to #error-logs channel
+      sendChannelMessage(
+        client,
+        "966622664800215040",
+        `💥 Error fetching manwha tags :\n\n${error}`
+      );
+    }
+  } else {
+    tags = [];
+  }
 
   const addManga = await addManhwaToAirTable({
     name: manhwaName,

@@ -15,7 +15,7 @@ function formatMessage(animes) {
   animes.forEach((anime, idx) => {
     message += `${idx + 1}. ${anime.name}\n URL: <${
       anime.url
-    }> \n Latest episode: ${anime.latestEpisodeNum}`;
+    }> \n Latest episode: ${anime.latestEpisodeNum}\n\n`;
 
     // Split messages before they exceed 2000 characters
     if (message.length > 1700) {

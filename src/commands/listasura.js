@@ -14,7 +14,7 @@ function formatMessage(manhwas) {
   manhwas.forEach((manhwa, idx) => {
     message += `${idx + 1}. ${manhwa.name}\n URL: <${
       manhwa.url
-    }> \n Latest chapter: ${manhwa.latestChapterNum}`;
+    }> \n Latest chapter: ${manhwa.latestChapterNum}\n\n`;
 
     // Split messages before they exceed 2000 characters
     if (message.length > 1700) {

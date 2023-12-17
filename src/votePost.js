@@ -38,7 +38,7 @@ export default async function votePost(reaction, client) {
       sendChannelMessage(
         client,
         "966631308245741598",
-        `⬆ Upvoted the manga: ${title}! \n\n${url}`
+        `⬆️ Upvoted the manga: ${title}! \n\n${url}`
       );
     } else {
       await page.click("div[data-event-action=downvote]");
@@ -46,7 +46,7 @@ export default async function votePost(reaction, client) {
       sendChannelMessage(
         client,
         "966631308245741598",
-        `⬇ Downvoted the manga: ${title}! \n\n${url}`
+        `⬇️ Downvoted the manga: ${title}! \n\n${url}`
       );
     }
 

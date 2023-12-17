@@ -50,12 +50,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
 });
 
 setInterval(async () => {
-  console.log("🔃 Fetching new chapters....");
+  console.log("🔃 Fetching new chapters & animes....");
   // Send message to #access-logs channel
   sendChannelMessage(
     client,
     "966631308245741598",
-    "🔃 Fetching new chapters...."
+    "🔃 Fetching new chapters & animes...."
   );
   const { newChap, newAnime } = await checkForNewChap(client);
   console.log({ newChap, newAnime });
