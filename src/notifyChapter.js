@@ -23,7 +23,7 @@ async function checkForNewMangaChap(newChap) {
   let mangaList = await fetchMangas(null);
 
   const posts = await (
-    await axios.get("https://old.reddit.com/r/manga/new.json?limit=10", {
+    await axios.get("https://www.reddit.com/r/manga/new.json?limit=10", {
       headers,
     })
   ).data.data.children;
