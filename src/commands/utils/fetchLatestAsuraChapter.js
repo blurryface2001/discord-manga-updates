@@ -7,7 +7,7 @@ const headers = {
 };
 
 export default async function fetchLatestAsuraChapter(url) {
-  const data = await axios.get(url, headers);
+  const data = await axios.get(url, { headers });
   const $ = load(data.data);
   const chapterList = $("#chapterlist");
   const latestChapter = chapterList.children().find("li:first");
