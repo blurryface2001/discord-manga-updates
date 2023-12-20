@@ -31,7 +31,7 @@ async function checkForNewMangaChap(newChap, client) {
 
       if (maxNumbers > config.MAX_PROXY_RETRIES) {
         const res = await axios.get(
-          "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/htp.txt"
+          "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
         );
 
         if (res.status === 200) {
