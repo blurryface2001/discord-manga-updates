@@ -1,5 +1,5 @@
 import axios from "axios";
-import axiosRetry from "axios-retry";
+import { HttpProxyAgent } from "http-proxy-agent";
 import { parseStringPromise } from "xml2js";
 import fetchMangas from "./commands/lib/fetchMangas.js";
 import fetchManhwas from "./commands/lib/fetchManhwas.js";
@@ -11,18 +11,6 @@ import fetchAnime from "./commands/lib/fetchAnime.js";
 import scrapeTotalAnimeEpisode from "./commands/utils/scrapeTotalAnimeEpisode.js";
 import updateAnimeLatestNum from "./commands/lib/updateAnimeLatestNum.js";
 
-axiosRetry(axios, {
-  retries: 3, // number of retries
-  retryDelay: (retryCount) => {
-      console.log(`Retrying getting latest Reddit post attempt: ${retryCount}`);
-      return retryCount * 3000; // time interval between retries
-  },
-  retryCondition: (error) => {
-      // if retry condition is not specified, by default idempotent requests are retried
-      return error.response.status === 403;
-  },
-});
-
 const headers = {
   "User-Agent":
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -32,37 +20,102 @@ function wait(amount) {
   return new Promise((resolve) => setTimeout(resolve, amount));
 }
 
-async function checkForNewMangaChap(newChap) {
-  let mangaList = await fetchMangas(null);
+async function checkForNewMangaChap(newChap, client) {
+  let maxNumbers = 5;
 
-  const posts = await (
-    await axios.get("https://www.reddit.com/r/manga/new.json?limit=10", {
-      headers,
-    })
-  ).data.data.children;
+  while (maxNumbers > 0) {
+    try {
+      let ipAddress = "";
+      let axiosRouter = axios;
 
-  for (const post of posts) {
-    const postTitle = post.data.title.toLowerCase();
-    for (let manga of mangaList) {
-      if (postTitle.toLowerCase().includes(manga.name.toLowerCase())) {
-        const created = post.data.created;
-        const now = new Date().getTime() / 1000;
-        const diff = now - created;
+      if (maxNumbers > 1) {
+        const res = await axios.get(
+          "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/htp.txt"
+        );
 
-        // If the manga was published in the last 10 minutes
-        if (diff < 618) {
-          manga = {
-            ...manga,
-            url: post.data.url,
-            reddit_link: `https://reddit.com${post.data.permalink}`,
-            postTitle: post.data.title,
+        if (res.status === 200) {
+          const ipAddresses = res.data.split("\n");
+          ipAddress =
+            ipAddresses[Math.floor(Math.random() * ipAddresses.length)];
+          console.log("Manga: IP addresses: ", ipAddresses);
+        } else {
+          // Send message to #access-logs channel
+          sendChannelMessage(
+            client,
+            "966631308245741598",
+            `💣 Github didn't send IP addresses: ${res.status}`
+          );
+          console.log(`💣 Github didn't send IP addresses: ${res.status}`);
+        }
+
+        if (ipAddress !== "") {
+          console.log("Manga: This is the IP address: " + ipAddress);
+          const axiosDefaultConfig = {
+            proxy: false,
+            httpAgent: new HttpProxyAgent(`http://${ipAddress}`),
           };
-          newChap.push(manga);
+
+          axiosRouter = axios.create(axiosDefaultConfig);
+        } else {
+          // Send message to #access-logs channel
+          sendChannelMessage(
+            client,
+            "966631308245741598",
+            "🔃 Using normal server request..."
+          );
+          console.log("🔃 Using normal server request...");
         }
       }
+
+      let mangaList = await fetchMangas(null);
+
+      const posts = await (
+        await axiosRouter.get(
+          "https://www.reddit.com/r/manga/new.json?limit=10",
+          {
+            headers,
+          }
+        )
+      ).data.data.children;
+
+      for (const post of posts) {
+        const postTitle = post.data.title.toLowerCase();
+        for (let manga of mangaList) {
+          if (postTitle.toLowerCase().includes(manga.name.toLowerCase())) {
+            const created = post.data.created;
+            const now = new Date().getTime() / 1000;
+            const diff = now - created;
+
+            // If the manga was published in the last 10 minutes
+            if (diff < 618) {
+              manga = {
+                ...manga,
+                url: post.data.url,
+                reddit_link: `https://reddit.com${post.data.permalink}`,
+                postTitle: post.data.title,
+              };
+              newChap.push(manga);
+            }
+          }
+        }
+      }
+      return newChap;
+    } catch (e) {
+      // Send error to #error-logs channel
+      sendChannelMessage(client, "966622664800215040", e.message);
+      sendChannelMessage(
+        client,
+        "966622664800215040",
+        `💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`
+      );
+      console.log(e.message);
+      console.log(`💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`);
+      await wait(1000 * (5 - maxNumbers));
+      maxNumbers--;
     }
   }
-  return newChap;
+
+  return [];
 }
 
 async function checkForNewManhwaChap(newChap) {
@@ -198,7 +251,7 @@ export default async function checkForNewChap(client) {
   let newAnime = [];
 
   try {
-    newChap = await checkForNewMangaChap(newChap);
+    newChap = await checkForNewMangaChap(newChap, client);
     newChap = await checkForNewManhwaChap(newChap);
     newChap = await checkForNewAsuraManhwas(newChap, client);
     newAnime = await checkForNewAnime(newAnime, client);
