@@ -22,14 +22,14 @@ function wait(amount) {
 }
 
 async function checkForNewMangaChap(newChap, client) {
-  let maxNumbers = config.MAX_RETRIES;
+  let maxNumbers = Number(config.MAX_RETRIES);
 
   while (maxNumbers > 0) {
     try {
       let ipAddress = "";
       let axiosRouter = axios;
 
-      if (maxNumbers > config.MAX_PROXY_RETRIES) {
+      if (maxNumbers > Number(config.MAX_PROXY_RETRIES)) {
         const res = await axios.get(
           "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
         );
