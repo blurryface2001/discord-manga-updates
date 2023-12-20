@@ -8,6 +8,8 @@ const {
   AIRTABLE_KEY,
   REDDIT_USERNAME,
   REDDIT_PASSWORD,
+  MAX_RETRIES,
+  MAX_PROXY_RETRIES
 } = process.env;
 
 const config = {
@@ -17,6 +19,8 @@ const config = {
   AIRTABLE_KEY,
   REDDIT_USERNAME,
   REDDIT_PASSWORD,
+  MAX_RETRIES,
+  MAX_PROXY_RETRIES
 };
 
 export default config;

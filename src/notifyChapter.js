@@ -10,6 +10,7 @@ import updateAsuraLatestNum from "./commands/lib/updateAsuraLatestNum.js";
 import fetchAnime from "./commands/lib/fetchAnime.js";
 import scrapeTotalAnimeEpisode from "./commands/utils/scrapeTotalAnimeEpisode.js";
 import updateAnimeLatestNum from "./commands/lib/updateAnimeLatestNum.js";
+import config from "./config.js";
 
 const headers = {
   "User-Agent":
@@ -21,14 +22,14 @@ function wait(amount) {
 }
 
 async function checkForNewMangaChap(newChap, client) {
-  let maxNumbers = 5;
+  let maxNumbers = config.MAX_RETRIES;
 
   while (maxNumbers > 0) {
     try {
       let ipAddress = "";
       let axiosRouter = axios;
 
-      if (maxNumbers > 1) {
+      if (maxNumbers > config.MAX_PROXY_RETRIES) {
         const res = await axios.get(
           "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/htp.txt"
         );
