@@ -13,8 +13,7 @@ import updateAnimeLatestNum from "./commands/lib/updateAnimeLatestNum.js";
 import config from "./config.js";
 
 const headers = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "Content-Type": "application/json",
 };
 
 function wait(amount) {
@@ -26,58 +25,28 @@ async function checkForNewMangaChap(newChap, client) {
 
   while (maxNumbers > 0) {
     try {
-      let ipAddress = "";
-      let axiosRouter = axios;
+      const urls = JSON.parse(process.env.URLS);
 
-      if (maxNumbers > Number(config.MAX_PROXY_RETRIES)) {
-        const res = await axios.get(
-          "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
-        );
+      const url = urls[Math.floor(Math.random() * urls.length)];
 
-        if (res.status === 200) {
-          const ipAddresses = res.data.split("\n");
-          ipAddress =
-            ipAddresses[Math.floor(Math.random() * ipAddresses.length)];
-          console.log("Manga: IP addresses: ", ipAddresses);
-        } else {
-          // Send message to #access-logs channel
-          sendChannelMessage(
-            client,
-            "966631308245741598",
-            `💣 Github didn't send IP addresses: ${res.status}`
-          );
-          console.log(`💣 Github didn't send IP addresses: ${res.status}`);
-        }
-
-        if (ipAddress !== "") {
-          console.log("Manga: This is the IP address: " + ipAddress);
-          const axiosDefaultConfig = {
-            proxy: false,
-            httpAgent: new HttpProxyAgent(`http://${ipAddress}`),
-          };
-
-          axiosRouter = axios.create(axiosDefaultConfig);
-        } else {
-          // Send message to #access-logs channel
-          sendChannelMessage(
-            client,
-            "966631308245741598",
-            "🔃 Using normal server request..."
-          );
-          console.log("🔃 Using normal server request...");
-        }
-      }
-
+      console.log(`Manga: Using this url: ${url}`);
+      sendChannelMessage(
+        client,
+        "966631308245741598",
+        `🔃 Manga: Using this url: ${url}`
+      );
+      
       let mangaList = await fetchMangas(null);
 
       const posts = await (
-        await axiosRouter.get(
-          "https://www.reddit.com/r/manga/new.json?limit=10",
+        await axios.get(
+          url,
           {
             headers,
+            timeout: 1000 * 50
           }
         )
-      ).data.data.children;
+      ).data;
 
       for (const post of posts) {
         const postTitle = post.data.title.toLowerCase();
@@ -103,13 +72,13 @@ async function checkForNewMangaChap(newChap, client) {
       return newChap;
     } catch (e) {
       // Send error to #error-logs channel
-      sendChannelMessage(client, "966622664800215040", e.message);
+      sendChannelMessage(client, "966622664800215040", `💥 Error fetching manga chap :\n\n${e}`);
       sendChannelMessage(
         client,
         "966622664800215040",
         `💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`
       );
-      console.log(e.message);
+      console.log(e);
       console.log(`💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`);
       await wait(1000 * (5 - maxNumbers));
       maxNumbers--;
@@ -201,19 +170,30 @@ async function checkForNewAsuraManhwas(newChap, client) {
   const asurList = await fetchAsuraManhwas();
 
   for (const manhwa of asurList) {
-    const { url } = manhwa;
+    try {
+      const { url } = manhwa;
 
-    const { latestChapterURL, latestChapterNum } =
-      await fetchLatestAsuraChapterNum(url);
+      const { latestChapterURL, latestChapterNum } =
+        await fetchLatestAsuraChapterNum(url);
 
-    if (latestChapterNum > manhwa.latestChapterNum) {
-      newChap.push({
-        ...manhwa,
-        url: latestChapterURL,
-        reddit_link: "It's from Asura",
-        postTitle: "[DISC] It's from Asura",
-      });
-      await updateAsuraLatestNum({ id: manhwa.id, latestChapterNum, client });
+      if (latestChapterNum > manhwa.latestChapterNum) {
+        newChap.push({
+          ...manhwa,
+          url: latestChapterURL,
+          reddit_link: "It's from Asura",
+          postTitle: "[DISC] It's from Asura",
+        });
+        await updateAsuraLatestNum({ id: manhwa.id, latestChapterNum, client });
+      }
+    } catch (e) {
+      console.log(`Asura error for ${url}: ${e}`);
+
+      // Send error to #error-logs channel
+      sendChannelMessage(
+        client,
+        '966622664800215040',
+        `💥 Error fetching asura chap for for ${url}:\n\n${e}`
+      );
     }
 
     await wait(330);
