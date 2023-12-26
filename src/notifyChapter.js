@@ -45,7 +45,7 @@ async function checkForNewMangaChap(newChap, client) {
           url,
           {
             headers,
-            timeout: 120000 // wait for atleast 2mins
+            timeout: 300000 // wait for atleast 5mins
           }
         )
       ).data;
