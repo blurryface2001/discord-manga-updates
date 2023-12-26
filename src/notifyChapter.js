@@ -186,6 +186,7 @@ async function checkForNewAsuraManhwas(newChap, client) {
         await updateAsuraLatestNum({ id: manhwa.id, latestChapterNum, client });
       }
     } catch (e) {
+      const { url } = manhwa;
       console.log(`Asura error for ${url}: ${e}`);
 
       // Send error to #error-logs channel
