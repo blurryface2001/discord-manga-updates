@@ -27,6 +27,8 @@ async function checkForNewMangaChap(newChap, client) {
     try {
       const urls = JSON.parse(process.env.URLS);
 
+      console.log("Manga: these are the urls: ");
+      console.log(urls);
       const url = urls[Math.floor(Math.random() * urls.length)];
 
       console.log(`🔃 Manga: Using this url: ${url}`);
