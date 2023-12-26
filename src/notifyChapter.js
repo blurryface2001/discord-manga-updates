@@ -29,7 +29,7 @@ async function checkForNewMangaChap(newChap, client) {
 
       const url = urls[Math.floor(Math.random() * urls.length)];
 
-      console.log(`Manga: Using this url: ${url}`);
+      console.log(`🔃 Manga: Using this url: ${url}`);
       sendChannelMessage(
         client,
         "966631308245741598",
@@ -47,6 +47,13 @@ async function checkForNewMangaChap(newChap, client) {
           }
         )
       ).data;
+
+      console.log(`🔃 Manga: Got the posts!!: ${url}`);
+      sendChannelMessage(
+        client,
+        "966631308245741598",
+        `🔃 Manga: got the posts!!: ${url}`
+      );
 
       for (const post of posts) {
         const postTitle = post.data.title.toLowerCase();
