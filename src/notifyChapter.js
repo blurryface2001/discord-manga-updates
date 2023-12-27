@@ -20,6 +20,8 @@ function wait(amount) {
   return new Promise((resolve) => setTimeout(resolve, amount));
 }
 
+const previousIndexes = [];
+
 async function checkForNewMangaChap(newChap, client) {
   let maxNumbers = Number(config.MAX_RETRIES);
 
@@ -29,20 +31,33 @@ async function checkForNewMangaChap(newChap, client) {
 
       console.log("Manga: these are the urls: ");
       console.log(urls);
-      const url = urls[Math.floor(Math.random() * urls.length)];
 
-      console.log(`🔃 Manga: Using this url: ${url}`);
+      let randomIndex;
+
+      do {
+        randomIndex = Math.floor(Math.random() * urls.length);
+      } while (previousIndexes.includes(randomIndex)); // Repeat until a different element is chosen
+      
+      previousIndexes.push(randomIndex);
+      if (previousIndexes.length > 3) {
+        // Keep only the last 3 selected elements
+        previousIndexes.shift();
+      }
+
+      const url = urls[randomIndex];
+
+      console.log(`🔃 Manga: Using this url ${url.name}: ${url.url}`);
       sendChannelMessage(
         client,
         "966631308245741598",
-        `🔃 Manga: Using this url: ${url}`
+        `🔃 Manga: Using this url: ${url.url}`
       );
       
       let mangaList = await fetchMangas(null);
 
       const posts = await (
         await axios.get(
-          url,
+          url.url,
           {
             headers,
             timeout: 300000 // wait for atleast 5mins
@@ -50,11 +65,11 @@ async function checkForNewMangaChap(newChap, client) {
         )
       ).data;
 
-      console.log(`🔃 Manga: Got the posts!!: ${url}`);
+      console.log(`🔃 Manga: Got the posts!!: ${url.url}`);
       sendChannelMessage(
         client,
         "966631308245741598",
-        `🔃 Manga: got the posts!!: ${url}`
+        `🔃 Manga: got the posts!!: ${url.url}`
       );
 
       for (const post of posts) {
