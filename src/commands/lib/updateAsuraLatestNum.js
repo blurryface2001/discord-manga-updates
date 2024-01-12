@@ -8,6 +8,7 @@ const base = new Airtable({ apiKey: config.AIRTABLE_KEY }).base(
 
 export default async function updateAsuraLatestNum({
   id,
+  title,
   latestChapterNum,
   client,
 }) {
@@ -17,26 +18,26 @@ export default async function updateAsuraLatestNum({
     });
 
     console.log(
-      `✅ Updated asura chapter number in Airtable: ${latestChapterNum}`
+      `✅ Updated asura chapter number in Airtable ${title}: ${latestChapterNum}`
     );
 
     sendChannelMessage(
       client,
       "966631308245741598",
-      `✅ Updated asura chapter number in Airtable: ${latestChapterNum}`
+      `✅ Updated asura chapter number in Airtable ${title}: ${latestChapterNum}`
     );
 
     return records.length !== 0;
   } catch (error) {
     console.error(
-      `💥 Cannot update asura chapter number in Airtable: \n\n${error}`
+      `💥 Cannot update asura chapter number in Airtable ${title}: \n\n${error}`
     );
 
     // Send error to #error-logs channel
     sendChannelMessage(
       client,
       "966622664800215040",
-      `💥 Cannot update asura chapter number in Airtable: \n\n${error}`
+      `💥 Cannot update asura chapter number in Airtable ${title}: \n\n${error}`
     );
     return false;
   }
