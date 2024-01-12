@@ -8,6 +8,7 @@ const base = new Airtable({ apiKey: config.AIRTABLE_KEY }).base(
 
 export default async function updateAnimeLatestNum({
   id,
+  title,
   latestEpisodeNum,
   client,
 }) {
@@ -17,26 +18,26 @@ export default async function updateAnimeLatestNum({
     });
 
     console.log(
-      `✅ Updated anime episode number in Airtable: ${latestEpisodeNum}`
+      `✅ Updated anime episode number in Airtable ${title}: ${latestEpisodeNum}`
     );
 
     sendChannelMessage(
       client,
       "966631308245741598",
-      `✅ Updated anime episode number in Airtable: ${latestEpisodeNum}`
+      `✅ Updated anime episode number in Airtable ${title}: ${latestEpisodeNum}`
     );
 
     return records.length !== 0;
   } catch (error) {
     console.error(
-      `💥 Cannot update anime episode number in Airtable: \n\n${error}`
+      `💥 Cannot update anime episode number in Airtable ${title}: \n\n${error}`
     );
 
     // Send error to #error-logs channel
     sendChannelMessage(
       client,
       "966622664800215040",
-      `💥 Cannot update anime episode number in Airtable: \n\n${error}`
+      `💥 Cannot update anime episode number in Airtable ${title}: \n\n${error}`
     );
     return false;
   }
