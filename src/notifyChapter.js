@@ -1,5 +1,4 @@
 import axios from "axios";
-import { HttpProxyAgent } from "http-proxy-agent";
 import { parseStringPromise } from "xml2js";
 import fetchMangas from "./commands/lib/fetchMangas.js";
 import fetchManhwas from "./commands/lib/fetchManhwas.js";
@@ -39,8 +38,8 @@ async function checkForNewMangaChap(newChap, client) {
       } while (previousIndexes.includes(randomIndex)); // Repeat until a different element is chosen
       
       previousIndexes.push(randomIndex);
-      if (previousIndexes.length > 3) {
-        // Keep only the last 3 selected elements
+      if (previousIndexes.length > 5) {
+        // Keep only the last 5 selected elements
         previousIndexes.shift();
       }
 
@@ -207,7 +206,7 @@ async function checkForNewAsuraManhwas(newChap, client) {
           reddit_link: "It's from Asura",
           postTitle: "[DISC] It's from Asura",
         });
-        await updateAsuraLatestNum({ id: manhwa.id, latestChapterNum, client });
+        await updateAsuraLatestNum({ id: manhwa.id, title: manhwa.name, latestChapterNum, client });
       }
     } catch (e) {
       const { url } = manhwa;
@@ -243,7 +242,7 @@ async function checkForNewAnime(newAnime, client) {
         url: episode.episodeURL,
         number: episode.number,
       });
-      await updateAnimeLatestNum({ id: anime.id, latestEpisodeNum, client });
+      await updateAnimeLatestNum({ id: anime.id, title: anime.name, latestEpisodeNum, client });
     }
 
     await wait(330);
