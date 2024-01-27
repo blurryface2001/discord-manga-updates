@@ -31,6 +31,7 @@ export default async function addAnimeToAirTable({
     return records.length !== 0;
   } catch (error) {
     console.error(`💥 Cannot add anime to Airtable: \n\n${error}`);
+    console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
