@@ -8,10 +8,12 @@ export default async function fetchLatestAsuraChapter(url) {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(false);
-  await page.goto(url);
-  await page.waitForTimeout(2000);
-  if (!page || page.status() !== 200) {
-    throw new Error(`💥💥 Failed to load asura manhwa: ${page.status()}`);
+  const manhwaPage = await page.goto(url);
+  try {
+    await page.waitForXPath('//*[@id="chapterlist"]', { timeout: 10000 });
+  } catch (e) {
+    // send the error along with page status
+    throw new Error(`Error: ${e} \n\nPage status: ${manhwaPage.status()}`);
   }
   const html = await page.content();
   await page.close();
