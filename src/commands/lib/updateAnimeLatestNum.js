@@ -18,20 +18,21 @@ export default async function updateAnimeLatestNum({
     });
 
     console.log(
-      `✅ Updated anime episode number in Airtable ${title}: ${latestEpisodeNum}`
+      `✅ Updated anime episode number in Airtable "${title}": ${latestEpisodeNum}`
     );
 
     sendChannelMessage(
       client,
       "966631308245741598",
-      `✅ Updated anime episode number in Airtable ${title}: ${latestEpisodeNum}`
+      `✅ Updated anime episode number in Airtable"${title}": ${latestEpisodeNum}`
     );
 
     return records.length !== 0;
   } catch (error) {
     console.error(
-      `💥 Cannot update anime episode number in Airtable ${title}: \n\n${error}`
+      `💥 Cannot update anime episode number in Airtable "${title}": \n\n${error}`
     );
+    console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
