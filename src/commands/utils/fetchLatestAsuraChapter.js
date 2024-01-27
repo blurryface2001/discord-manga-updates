@@ -9,7 +9,7 @@ export default async function fetchLatestAsuraChapter(url) {
   const page = await browser.newPage();
   await page.setJavaScriptEnabled(false);
   await page.goto(url);
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(2000);
   if (!page.ok()) {
     throw new Error(`💥💥 Failed to load asura manhwa: ${page.status()}`);
   }
