@@ -30,6 +30,7 @@ export default async function addManhwaToAirTable({
     return records.length !== 0;
   } catch (error) {
     console.error(`💥 Cannot add manhwa to Airtable: \n\n${error}`);
+    console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
