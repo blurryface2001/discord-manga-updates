@@ -37,7 +37,7 @@ export default async function updateAnimeLatestNum({
     sendChannelMessage(
       client,
       "966622664800215040",
-      `💥 Cannot update anime episode number in Airtable ${title}: \n\n${error}`
+      `💥 Cannot update anime episode number in Airtable "${title}": \n\n${error}`
     );
     return false;
   }
