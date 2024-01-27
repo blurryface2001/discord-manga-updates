@@ -101,8 +101,8 @@ async function checkForNewMangaChap(newChap, client) {
         "966622664800215040",
         `💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`
       );
-      console.log(e);
-      console.log(`💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`);
+      console.error(e);
+      console.error(`💥 Manga: Retrying getting mangas: ${6 - maxNumbers}`);
       await wait(1000 * (5 - maxNumbers));
       maxNumbers--;
     }
@@ -210,7 +210,8 @@ async function checkForNewAsuraManhwas(newChap, client) {
       }
     } catch (e) {
       const { url } = manhwa;
-      console.log(`Asura error for ${url}: ${e}`);
+      console.error(`Asura error for ${url}: ${e}`);
+      console.error(e);
 
       // Send error to #error-logs channel
       sendChannelMessage(
@@ -230,19 +231,37 @@ async function checkForNewAnime(newAnime, client) {
   const animeList = await fetchAnime();
 
   for (const anime of animeList) {
-    const { url } = anime;
-    const animeId = url.split("/").pop();
-    const { episode, latestEpisodeNum } = await scrapeTotalAnimeEpisode(
-      animeId
-    );
+    try {
+      const { url } = anime;
+      const animeId = url.split('/').pop();
+      const { episode, latestEpisodeNum } = await scrapeTotalAnimeEpisode(
+        animeId
+      );
 
-    if (latestEpisodeNum > anime.latestEpisodeNum) {
-      newAnime.push({
-        ...anime,
-        url: episode.episodeURL,
-        number: episode.number,
-      });
-      await updateAnimeLatestNum({ id: anime.id, title: anime.name, latestEpisodeNum, client });
+      if (latestEpisodeNum > anime.latestEpisodeNum) {
+        newAnime.push({
+          ...anime,
+          url: episode.episodeURL,
+          number: episode.number,
+        });
+        await updateAnimeLatestNum({
+          id: anime.id,
+          title: anime.name,
+          latestEpisodeNum,
+          client,
+        });
+      }
+    } catch (e) {
+      const { url } = anime;
+      console.error(`Anime error for ${url}: ${e}`);
+      console.error(e);
+
+      // Send error to #error-logs channel
+      sendChannelMessage(
+        client,
+        '966622664800215040',
+        `💥 Error fetching anime episode for for ${url}:\n\n${e}`
+      );
     }
 
     await wait(330);
@@ -261,7 +280,7 @@ export default async function checkForNewChap(client) {
     newChap = await checkForNewAsuraManhwas(newChap, client);
     newAnime = await checkForNewAnime(newAnime, client);
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
