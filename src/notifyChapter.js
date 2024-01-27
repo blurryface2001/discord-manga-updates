@@ -210,14 +210,14 @@ async function checkForNewAsuraManhwas(newChap, client) {
       }
     } catch (e) {
       const { url } = manhwa;
-      console.error(`Asura error for ${url}: ${e}`);
+      console.error(`Asura error for "${url}": ${e}`);
       console.error(e);
 
       // Send error to #error-logs channel
       sendChannelMessage(
         client,
         '966622664800215040',
-        `💥 Error fetching asura chap for for ${url}:\n\n${e}`
+        `💥 Error fetching asura chap for "${url}":\n\n${e}`
       );
     }
 
@@ -253,14 +253,14 @@ async function checkForNewAnime(newAnime, client) {
       }
     } catch (e) {
       const { url } = anime;
-      console.error(`Anime error for ${url}: ${e}`);
+      console.error(`Anime error for "${url}": ${e}`);
       console.error(e);
 
       // Send error to #error-logs channel
       sendChannelMessage(
         client,
         '966622664800215040',
-        `💥 Error fetching anime episode for for ${url}:\n\n${e}`
+        `💥 Error fetching anime episode for "${url}":\n\n${e}`
       );
     }
 
