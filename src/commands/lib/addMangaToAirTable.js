@@ -28,6 +28,7 @@ export default async function addMangaToAirTable({
     return records.length !== 0;
   } catch (error) {
     console.error(`💥 Cannot add manga to Airtable: \n\n${error}`);
+    console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
