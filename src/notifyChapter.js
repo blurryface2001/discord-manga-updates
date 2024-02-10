@@ -9,6 +9,7 @@ import updateAsuraLatestNum from "./commands/lib/updateAsuraLatestNum.js";
 import fetchAnime from "./commands/lib/fetchAnime.js";
 import scrapeTotalAnimeEpisode from "./commands/utils/scrapeTotalAnimeEpisode.js";
 import updateAnimeLatestNum from "./commands/lib/updateAnimeLatestNum.js";
+import fetchControls from './commands/lib/fetchControls.js';
 import config from "./config.js";
 
 const headers = {
@@ -275,20 +276,64 @@ export default async function checkForNewChap(client) {
   let newAnime = [];
 
   try {
-    newChap = await checkForNewMangaChap(newChap, client);
-    newChap = await checkForNewManhwaChap(newChap);
-    newChap = await checkForNewAsuraManhwas(newChap, client);
-    newAnime = await checkForNewAnime(newAnime, client);
+    const controls = await fetchControls();
+    console.log(controls);
+
+    if (controls['manga'] !== null && controls['manga']) {
+      newChap = await checkForNewMangaChap(newChap, client);
+    } else {
+      // Send message to #access-logs channel
+      sendChannelMessage(
+        client,
+        '966631308245741598',
+        '🚫 Manga updates are currently disabled, skipping...'
+      );
+      console.log('🚫 Manga updates are currently disabled, skipping...');
+    }
+    if (controls['manhwa'] !== null && controls['manhwa']) {
+      newChap = await checkForNewManhwaChap(newChap);
+    } else {
+      // Send message to #access-logs channel
+      sendChannelMessage(
+        client,
+        '966631308245741598',
+        '🚫 Manhwa updates are currently disabled, skipping...'
+      );
+      console.log('🚫 Manhwa updates are currently disabled, skipping...');
+    }
+    if (controls['asura'] !== null && controls['asura']) {
+      newChap = await checkForNewAsuraManhwas(newChap, client);
+    } else {
+      // Send message to #access-logs channel
+      sendChannelMessage(
+        client,
+        '966631308245741598',
+        '🚫 Asura updates are currently disabled, skipping...'
+      );
+      console.log('🚫 Asura updates are currently disabled, skipping...');
+    }
+    if (controls['anime'] !== null && controls['anime']) {
+      newAnime = await checkForNewAnime(newAnime, client);
+    } else {
+      // Send message to #access-logs channel
+      sendChannelMessage(
+        client,
+        '966631308245741598',
+        '🚫 Anime updates are currently disabled, skipping...'
+      );
+      console.log('🚫 Anime updates are currently disabled, skipping...');
+    }
   } catch (error) {
     console.error(error);
 
     // Send error to #error-logs channel
     sendChannelMessage(
       client,
-      "966622664800215040",
+      '966622664800215040',
       `💥 Error fetching new chap :\n\n${error}`
     );
   }
 
   return { newChap, newAnime };
 }
+
