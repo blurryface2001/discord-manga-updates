@@ -10,12 +10,16 @@ export default async function fetchLatestAsuraChapter(url) {
   await page.setJavaScriptEnabled(false);
   const manhwaPage = await page.goto(url);
   if (manhwaPage.status() !== 200) {
+    await page.close();
+    await browser.close();
     throw new Error(`Error: ${manhwaPage.status()}`);
   }
   try {
     await page.waitForXPath('//*[@id="chapterlist"]', { timeout: 10000 });
   } catch (e) {
     // send the error along with page status
+    await page.close();
+    await browser.close();
     throw new Error(`Error: ${e} \n\nPage status: ${manhwaPage.status()}`);
   }
   const html = await page.content();
