@@ -39,8 +39,8 @@ async function checkForNewMangaChap(newChap, client) {
       } while (previousIndexes.includes(randomIndex)); // Repeat until a different element is chosen
       
       previousIndexes.push(randomIndex);
-      if (previousIndexes.length > 5) {
-        // Keep only the last 5 selected elements
+      if (previousIndexes.length > 2) {
+        // Keep only the last 2 selected elements
         previousIndexes.shift();
       }
 
@@ -57,7 +57,7 @@ async function checkForNewMangaChap(newChap, client) {
 
       const posts = await (
         await axios.get(
-          url.url,
+          url.url + "/latestposts",
           {
             headers,
             timeout: 300000 // wait for atleast 5mins
