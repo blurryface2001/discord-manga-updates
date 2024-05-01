@@ -1,9 +1,9 @@
-import config from './config.js';
+import axios from 'axios';
 import sendChannelMessage from './sendChannelMessage.js';
-import puppeteer from 'puppeteer-extra';
 
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-puppeteer.use(StealthPlugin());
+const headers = {
+  'Content-Type': 'application/json',
+};
 
 export default async function votePost(reaction, client) {
   if (reaction.message.channelId !== '965269327580381304') return;
@@ -12,40 +12,29 @@ export default async function votePost(reaction, client) {
 
   const { content } = reaction.message;
 
-  const title = content
-    .match(/(?<=New (chapter|art|news|post) of)(.*)(?=is available!)/)[0]
-    .trim();
-  const url = content.match(/(?<=Discussion: <)(.*)(?=>)/)[0].trim();
-  const id = url.split('https://reddit.com/r/manga/comments/')[1].split('/')[0];
-
-  console.log('🔃 Voting for: ', title);
-  sendChannelMessage(client, '966631308245741598', `🔃 Voting for: ${title}`);
-
-  let browser;
-  let page;
   try {
-    // Launch the browser
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
-    await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
-        '(KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36'
-    );
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US,en;q=0.9',
-    });
+    const title = content
+      .match(/(?<=New (chapter|art|news|post) of)(.*)(?=is available!)/)[0]
+      .trim();
+    const postUrl = content.match(/(?<=Discussion: <)(.*)(?=>)/)[0].trim();
+    const id = postUrl
+      .split('https://reddit.com/r/manga/comments/')[1]
+      .split('/')[0];
 
-    // Login to reddit
-    await page.goto('https://old.reddit.com/login');
-    await page.type('#user_login', config.REDDIT_USERNAME);
-    await page.type('#passwd_login', config.REDDIT_PASSWORD);
-    await page.click('form#login-form button[type=submit]');
-    await page.waitForNavigation();
+    console.log('🔃 Voting for: ', title);
+    sendChannelMessage(client, '966631308245741598', `🔃 Voting for: ${title}`);
 
-    // Go to the subreddit
-    await page.goto(`https://old.reddit.com/${id}/`);
+    const urls = JSON.parse(process.env.URLS);
+    const url = urls[Math.floor(Math.random() * urls.length)];
+
+    console.log('🔃 Using this url: ', url.name, url.url);
+
     if (name === '👍') {
-      await page.click('div[data-event-action=upvote]');
+      await axios.get(url.url + `/upvote/${id}`, {
+        headers,
+        timeout: 300000, // wait for atleast 5mins
+      });
+
       console.log(`👍 ${title}`);
       sendChannelMessage(
         client,
@@ -53,7 +42,11 @@ export default async function votePost(reaction, client) {
         `⬆️ Upvoted the manga: ${title}! \n\n${url}`
       );
     } else {
-      await page.click('div[data-event-action=downvote]');
+      await axios.get(url.url + `/downvote/${id}`, {
+        headers,
+        timeout: 300000, // wait for atleast 5mins
+      });
+
       console.log(`👎 ${title}`);
       sendChannelMessage(
         client,
@@ -61,16 +54,7 @@ export default async function votePost(reaction, client) {
         `⬇️ Downvoted the manga: ${title}! \n\n${url}`
       );
     }
-
-    await page.close();
-    await browser.close();
   } catch (error) {
-    if (page) {
-      await page.close();
-    }
-    if (browser) {
-      await browser.close();
-    }
     console.error(error);
 
     // Send error to #error-logs channel
