@@ -39,7 +39,7 @@ export default async function votePost(reaction, client) {
       sendChannelMessage(
         client,
         '966631308245741598',
-        `⬆️ Upvoted the manga: ${title}! \n\n${url.url}`
+        `⬆️ Upvoted the manga: ${title}! \n\n${postUrl}`
       );
     } else {
       await axios.get(url.url + `/downvote/${id}`, {
@@ -51,7 +51,7 @@ export default async function votePost(reaction, client) {
       sendChannelMessage(
         client,
         '966631308245741598',
-        `⬇️ Downvoted the manga: ${title}! \n\n${url.url}`
+        `⬇️ Downvoted the manga: ${title}! \n\n${postUrl}`
       );
     }
   } catch (error) {
