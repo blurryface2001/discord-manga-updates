@@ -73,8 +73,7 @@ export default async function fetchMangas(genre) {
     }
 
     const data = await res.json();
-
-    console.log(data);
+    
     data.results.forEach((row) => {
       const rowGenre = row.genre || [];
       if (genre === null || rowGenre.includes(genre)) {
@@ -92,3 +91,4 @@ export default async function fetchMangas(genre) {
 
   return allMangas;
 }
+
