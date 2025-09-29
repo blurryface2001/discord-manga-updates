@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 const {
@@ -9,7 +9,8 @@ const {
   REDDIT_USERNAME,
   REDDIT_PASSWORD,
   MAX_RETRIES,
-  MAX_PROXY_RETRIES
+  MAX_PROXY_RETRIES,
+  BASEROW_KEY,
 } = process.env;
 
 const config = {
@@ -20,7 +21,8 @@ const config = {
   REDDIT_USERNAME,
   REDDIT_PASSWORD,
   MAX_RETRIES,
-  MAX_PROXY_RETRIES
+  MAX_PROXY_RETRIES,
+  BASEROW_KEY,
 };
 
 export default config;
