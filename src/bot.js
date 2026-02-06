@@ -125,7 +125,7 @@ setInterval(async () => {
   }
 }, 600000); // Runs every 10 minutes
 
-client.login(config.DISCORD_TOKEN);
+client.login(config.DISCORD_TOKEN).catch((error) => console.log(`💥 Error while logging in: ${error}`));
 
 http
   .createServer(function (req, res) {
@@ -146,3 +146,4 @@ http
     res.end("Hello World\n");
   })
   .listen(process.env.PORT);
+
