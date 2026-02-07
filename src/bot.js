@@ -6,6 +6,8 @@ import checkForNewChap from "./notifyChapter.js";
 import votePost from "./votePost.js";
 import sendChannelMessage from "./sendChannelMessage.js";
 
+console.log("🤖 Starting bot...");
+
 export const client = new Client({
   intents: [
     "GUILDS",
@@ -18,9 +20,12 @@ export const client = new Client({
 
 client.once("ready", () => {
   console.log("🤖 Discord bot is ready!");
+  console.log("🤖 Ready as", client.user.tag);
 
   // Send message to #access-logs channel
   sendChannelMessage(client, "966631308245741598", "🎉 Bot is online!");
+
+  setInterval(runJob, 30000); // Runs every 10 minutes
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -49,7 +54,12 @@ client.on("messageReactionAdd", async (reaction, user) => {
   votePost(reaction, client);
 });
 
-setInterval(async () => {
+client.on("debug", msg => console.log("[DEBUG]", msg));
+client.on("warn", msg => console.warn("[WARN]", msg));
+client.on("error", err => console.error("[ERROR]", err));
+client.on("shardError", err => console.error("[SHARD]", err));
+
+async function runJob() {
   console.log("🔃 Fetching new chapters & animes....");
   // Send message to #access-logs channel
   sendChannelMessage(
@@ -123,7 +133,7 @@ setInterval(async () => {
     );
     console.log("💥 No new anime episodes found!");
   }
-}, 600000); // Runs every 10 minutes
+}
 
 client.login(config.DISCORD_TOKEN).catch((error) => console.log(`💥 Error while logging in: ${error}`));
 
@@ -146,4 +156,3 @@ http
     res.end("Hello World\n");
   })
   .listen(process.env.PORT);
-
