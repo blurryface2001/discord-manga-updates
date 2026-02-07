@@ -15,3 +15,7 @@ rest
   })
   .then(() => console.log("✅ Successfully registered application commands."))
   .catch(console.error);
+
+setTimeout(() => {
+  console.log("Process kept alive");
+}, 10_000);
