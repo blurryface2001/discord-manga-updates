@@ -20,12 +20,12 @@ export const client = new Client({
 
 client.once("ready", () => {
   console.log("🤖 Discord bot is ready!");
-  console.log("🤖 Ready as", client.user.tag);
+  console.log("🤖 Ready as: ", client.user.tag);
 
   // Send message to #access-logs channel
   sendChannelMessage(client, "966631308245741598", "🎉 Bot is online!");
 
-  setInterval(runJob, 30000); // Runs every 10 minutes
+  setInterval(runJob, 600000); // Runs every 10 minutes
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -156,3 +156,4 @@ http
     res.end("Hello World\n");
   })
   .listen(process.env.PORT);
+
