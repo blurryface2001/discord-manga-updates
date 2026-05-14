@@ -5,7 +5,7 @@ import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
 import votePost from "./votePost.js";
 import sendChannelMessage from "./sendChannelMessage.js";
-import getLatestPostsFromSub from "./commands/lib/getLatestPostsFromSub.js";
+import getLatestPostsFromSub from "./commands/lib/getLatestPostsFromSubs.js";
 
 console.log("🤖 Starting bot...");
 
