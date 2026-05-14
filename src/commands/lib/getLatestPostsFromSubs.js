@@ -10,6 +10,11 @@ export default async function getLatestPostsFromSubs(client) {
     let newPosts = [];
 
     for (const url of URLS) {
+      sendChannelMessage(
+        client,
+        '1504536098360135964',
+        `🔃 Fetching from the sub: ${url.split('/')[4]}`,
+      );
       const response = await fetch(url, {
         headers: {
           'User-Agent': USER_AGENT,
