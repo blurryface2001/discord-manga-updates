@@ -5,6 +5,7 @@ import * as commands from "./commands/index.js";
 import checkForNewChap from "./notifyChapter.js";
 import votePost from "./votePost.js";
 import sendChannelMessage from "./sendChannelMessage.js";
+import getLatestPostsFromSub from "./commands/lib/getLatestPostsFromSub.js";
 
 console.log("🤖 Starting bot...");
 
@@ -138,8 +139,8 @@ async function runJob() {
 
 async function getLatestPosts() {
   try {
-    sendChannelMessage(client, "1504536098360135964", "🔃 Getting latest posts from sub...");
-    const newPosts = await getLatestPostsFromSubs(client);
+    sendChannelMessage(client, "1504536098360135964", "🔃 Getting latest posts from sub");
+    const newPosts = await getLatestPostsFromSub(client);
     newPosts.forEach((post) => {
       const postTitle = post.title;
       const postUrl = post.permalink;
@@ -156,7 +157,7 @@ async function getLatestPosts() {
     console.error("💥 Error when getting latest posts: ", error);
     sendChannelMessage(
       client,
-      "966631308245741598",
+      "966622664800215040",
       `💥 Error when getting latest posts: \n\n${error}`
     );
   }
