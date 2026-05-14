@@ -26,6 +26,7 @@ client.once("ready", () => {
   sendChannelMessage(client, "966631308245741598", "🎉 Bot is online!");
 
   setInterval(runJob, 600000); // Runs every 10 minutes
+  setInterval(getLatestPosts, 10000); // Runs every 10 sec
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -132,6 +133,32 @@ async function runJob() {
       "💥 No new anime episodes found!"
     );
     console.log("💥 No new anime episodes found!");
+  }
+}
+
+async function getLatestPosts() {
+  try {
+    sendChannelMessage(client, "1504536098360135964", "🔃 Getting latest posts from sub...");
+    const newPosts = await getLatestPostsFromSubs(client);
+    newPosts.forEach((post) => {
+      const postTitle = post.title;
+      const postUrl = post.permalink;
+
+      const message = `<@786569518256226325> ⭐ New post Title: ${ 
+        postTitle
+      } \nDiscussion: <${postUrl}> \n\n${post.url}`
+
+      // Send message to channel
+      sendChannelMessage(client, "1504522179939664114", message);
+    })
+    sendChannelMessage(client, "1504536098360135964", `🎉 Latest posts fetched! No. of posts: ${newPosts.length}`);
+  } catch (error) {
+    console.error("💥 Error when getting latest posts: ", error);
+    sendChannelMessage(
+      client,
+      "966631308245741598",
+      `💥 Error when getting latest posts: \n\n${error}`
+    );
   }
 }
 
