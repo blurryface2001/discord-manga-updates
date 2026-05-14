@@ -2,7 +2,7 @@ import config from '../../config.js';
 import fetch from 'node-fetch';
 import sendChannelMessage from '../../sendChannelMessage.js';
 
-export default async function getLatestPostsFromSubs(client) {
+export default async function getLatestPostsFromSub(client) {
   const URLS = JSON.parse(process.env.SUB_URLS);
   const USER_AGENT = process.env.USER_AGENT;
 
