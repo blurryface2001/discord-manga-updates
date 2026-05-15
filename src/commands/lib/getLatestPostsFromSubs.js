@@ -25,12 +25,15 @@ export default async function getLatestPostsFromSub(client, now) {
       );
       sendChannelMessage(
         client,
-        '966622664800215040',
+        '1504536098360135964',
+        `💥 Backend error ${response.status} while fetching sub posts: ${response.statusText}`,
+      );
+      throw new Error(
         `💥 Backend error ${response.status} while fetching sub posts: ${response.statusText}`,
       );
     }
 
-    const json = await response.json();
+    const data = await response.json();
     const allPosts = data.posts || data;
 
     const filteredPosts = allPosts.filter((p) => {
