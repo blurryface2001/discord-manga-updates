@@ -55,8 +55,9 @@ export default async function getLatestPostsFromSub(client) {
       newPosts.push(...posts);
     }
 
+    const now = new Date.getTime() / 1000;
     // filter out only the posts made in last 12 seconds
-    newPosts.filter((p) => p.created_utc > Date.now() / 1000 - 12);
+    newPosts.filter((p) => now - p.created_utc < 12);
 
     return newPosts;
   } catch (error) {
