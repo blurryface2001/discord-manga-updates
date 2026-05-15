@@ -4,77 +4,45 @@ import sendChannelMessage from '../../sendChannelMessage.js';
 
 export default async function getLatestPostsFromSub(client, now) {
   const URLS = JSON.parse(process.env.SUB_URLS);
-  const USER_AGENT = process.env.USER_AGENT;
+  const url = URLS[Math.floor(Math.random() * URLS.length)].url;
 
   try {
-    let newPosts = [];
+    sendChannelMessage(
+      client,
+      '1504536098360135964',
+      `✅ Requesting latest sub posts from backend...`,
+    );
 
-    for (const url of URLS) {
-      const subName = url.split('/')[4];
-
-      sendChannelMessage(
-        client,
-        '1504536098360135964',
-        `✅ Fetching from r/${subName}`,
-      );
-
-      const response = await fetch(url, {
+    const response = await fetch(
+      url,
+      {
         headers: {
-          'User-Agent': USER_AGENT,
           Accept: 'application/json',
         },
-      });
+      },
+      {
+        timeout: 10000,
+      },
+    );
 
-      // Better rate limit handling
-      if (response.status === 429) {
-        console.log(`⚠️ Rate limited on r/${subName}`);
-        sendChannelMessage(
-          client,
-          '966622664800215040',
-          `⚠️ Rate limited on r/${subName} - Slowing down`,
-        );
-        await new Promise((r) => setTimeout(r, 3000)); // wait longer
-        continue;
-      }
-
-      if (!response.ok) {
-        console.error(`💥 Error ${response.status} on r/${subName}`);
-        sendChannelMessage(
-          client,
-          '966622664800215040',
-          `💥 Error when fetch latest post from r/${subName}: ${response.status} ${response.statusText}`,
-        );
-        await new Promise((r) => setTimeout(r, 3000));
-        continue;
-      }
-
-      const json = await response.json();
-      const posts = [];
-
-      for (const child of json.data.children) {
-        const p = child.data;
-        posts.push({
-          title: p.title,
-          url: p.url,
-          permalink: `https://reddit.com${p.permalink}`,
-          author: p.author,
-          created_utc: p.created_utc,
-          score: p.score,
-          id: p.id,
-          full_link: `https://reddit.com${p.permalink}`,
-          subreddit: p.subreddit,
-        });
-      }
-
-      newPosts.push(...posts);
-
-      // Delay between subreddits
-      if (url !== URLS[URLS.length - 1]) {
-        await new Promise((resolve) => setTimeout(resolve, 3500)); // 3.5 seconds
-      }
+    if (!response.ok) {
+      console.error(
+        `💥 Backend error ${response.status} while fetching sub posts: ${response.statusText}`,
+      );
+      sendChannelMessage(
+        client,
+        '966622664800215040',
+        `💥 Backend error ${response.status} while fetching sub posts: ${response.statusText}`,
+      );
     }
 
-    const filteredPosts = newPosts.filter((p) => now - p.created_utc < 22);
+    const json = await response.json();
+    const allPosts = data.posts || data;
+
+    const filteredPosts = allPosts.filter((p) => {
+      const created = p.created_utc || p.data?.created || p.created;
+      return now - created < 12;
+    });
 
     return filteredPosts;
   } catch (error) {
