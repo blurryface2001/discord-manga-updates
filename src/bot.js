@@ -151,9 +151,7 @@ async function getLatestPosts() {
       } \nDiscussion: <${postUrl}> \n\n${post.url}`
 
       // Send message to channel
-      sendChannelMessage(client, "1504522179939664114", message);
-      // Wait for 3 sec
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      sendChannelMessage(client, "1504762644626800680", message);
     })
     sendChannelMessage(client, "1504536098360135964", `🎉 Latest posts fetched! No. of posts: ${newPosts.length}`);
   } catch (error) {
