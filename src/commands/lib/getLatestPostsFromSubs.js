@@ -10,11 +10,14 @@ export default async function getLatestPostsFromSub(client, now) {
     let newPosts = [];
 
     for (const url of URLS) {
+      const subName = url.split('/')[4];
+
       sendChannelMessage(
         client,
         '1504536098360135964',
-        `✅ Fetching from the sub: ${url.split('/')[4]}`,
+        `✅ Fetching from r/${subName}`,
       );
+
       const response = await fetch(url, {
         headers: {
           'User-Agent': USER_AGENT,
@@ -22,16 +25,27 @@ export default async function getLatestPostsFromSub(client, now) {
         },
       });
 
-      if (!response.ok) {
-        console.error(
-          `💥 Error when fetch latest post from sub: ${response.status} ${response.statusText}`,
-        );
+      // Better rate limit handling
+      if (response.status === 429) {
+        console.log(`⚠️ Rate limited on r/${subName}`);
         sendChannelMessage(
           client,
           '966622664800215040',
-          `💥 Error when fetch latest post from sub: \n\n${response.status} ${response.statusText}`,
+          `⚠️ Rate limited on r/${subName} - Slowing down`,
         );
-        return [];
+        await new Promise((r) => setTimeout(r, 3000)); // wait longer
+        continue;
+      }
+
+      if (!response.ok) {
+        console.error(`💥 Error ${response.status} on r/${subName}`);
+        sendChannelMessage(
+          client,
+          '966622664800215040',
+          `💥 Error when fetch latest post from r/${subName}: ${response.status} ${response.statusText}`,
+        );
+        await new Promise((r) => setTimeout(r, 3000));
+        continue;
       }
 
       const json = await response.json();
@@ -47,31 +61,29 @@ export default async function getLatestPostsFromSub(client, now) {
           created_utc: p.created_utc,
           score: p.score,
           id: p.id,
-          // Useful for deduplication
           full_link: `https://reddit.com${p.permalink}`,
+          subreddit: p.subreddit,
         });
       }
 
       newPosts.push(...posts);
 
+      // Delay between subreddits
       if (url !== URLS[URLS.length - 1]) {
-        // Wait for 3 sec
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 3500)); // 3.5 seconds
       }
     }
 
-    // filter out only the posts made in last 22 seconds
     const filteredPosts = newPosts.filter((p) => now - p.created_utc < 22);
 
     return filteredPosts;
   } catch (error) {
     console.error(`💥 Cannot fetch latest post from sub: \n\n${error}`);
 
-    // Send error to #error-logs channel
     sendChannelMessage(
       client,
       '966622664800215040',
-      `💥 Cannot fetch latest post from sub: \n\n${error}`,
+      `💥 Cannot fetch latest post from sub: \n\n${error.message || error}`,
     );
 
     return [];
