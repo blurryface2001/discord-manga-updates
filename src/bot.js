@@ -27,7 +27,7 @@ client.once("ready", () => {
   sendChannelMessage(client, "966631308245741598", "🎉 Bot is online!");
 
   setInterval(runJob, 600000); // Runs every 10 minutes
-  setInterval(getLatestPosts, 20000); // Runs every 20 sec
+  setInterval(getLatestPosts, 10000); // Runs every 10 sec
 });
 
 client.on("interactionCreate", async (interaction) => {
