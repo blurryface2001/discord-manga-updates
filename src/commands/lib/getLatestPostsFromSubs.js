@@ -53,9 +53,12 @@ export default async function getLatestPostsFromSub(client, now) {
       }
 
       newPosts.push(...posts);
+
+      // Wait for 3 sec
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
 
-    // filter out only the posts made in last 12 seconds
+    // filter in only the posts made in last 22 seconds
     const filteredPosts = newPosts.filter((p) => now - p.created_utc < 22);
 
     return filteredPosts;
