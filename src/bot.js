@@ -27,7 +27,7 @@ client.once("ready", () => {
   sendChannelMessage(client, "966631308245741598", "🎉 Bot is online!");
 
   setInterval(runJob, 600000); // Runs every 10 minutes
-  setInterval(getLatestPosts, 10000); // Runs every 10 sec
+  setInterval(getLatestPosts, 20000); // Runs every 20 sec
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -140,8 +140,9 @@ async function runJob() {
 async function getLatestPosts() {
   try {
     sendChannelMessage(client, "1504536098360135964", "🔃 Getting latest posts from sub");
-    const newPosts = await getLatestPostsFromSub(client);
-    newPosts.forEach((post) => {
+    const now = new Date().getTime() / 1000;
+    const newPosts = await getLatestPostsFromSub(client, now);
+    newPosts.forEach(async (post) => {
       const postTitle = post.title;
       const postUrl = post.permalink;
 
@@ -151,6 +152,8 @@ async function getLatestPosts() {
 
       // Send message to channel
       sendChannelMessage(client, "1504522179939664114", message);
+      // Wait for 3 sec
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     })
     sendChannelMessage(client, "1504536098360135964", `🎉 Latest posts fetched! No. of posts: ${newPosts.length}`);
   } catch (error) {
