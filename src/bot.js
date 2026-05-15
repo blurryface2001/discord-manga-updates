@@ -144,11 +144,11 @@ async function getLatestPosts() {
     const newPosts = await getLatestPostsFromSub(client, now);
     newPosts.forEach(async (post) => {
       const postTitle = post.data.title;
-      const postUrl = post.data.permalink;
+      const postUrl = `https://reddit.com${post.data.permalink}`;
 
       const message = `<@786569518256226325> ⭐ New post Title: ${ 
         postTitle
-      } \nDiscussion: <${postUrl}> \n\n${post.url}`
+      } \nDiscussion: <${postUrl}> \n\n${post.data.url}`
 
       // Send message to channel
       sendChannelMessage(client, "1504762644626800680", message);
