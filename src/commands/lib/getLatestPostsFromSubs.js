@@ -13,7 +13,7 @@ export default async function getLatestPostsFromSub(client) {
       sendChannelMessage(
         client,
         '1504536098360135964',
-        `🔃 Fetching from the sub: ${url.split('/')[4]}`,
+        `✅ Fetching from the sub: ${url.split('/')[4]}`,
       );
       const response = await fetch(url, {
         headers: {
@@ -55,11 +55,11 @@ export default async function getLatestPostsFromSub(client) {
       newPosts.push(...posts);
     }
 
-    const now = new Date.getTime() / 1000;
+    const now = new Date().getTime() / 1000;
     // filter out only the posts made in last 12 seconds
-    newPosts.filter((p) => now - p.created_utc < 12);
+    const filteredPosts = newPosts.filter((p) => now - p.created_utc < 12);
 
-    return newPosts;
+    return filteredPosts;
   } catch (error) {
     console.error(`💥 Cannot fetch latest post from sub: \n\n${error}`);
 
@@ -70,6 +70,6 @@ export default async function getLatestPostsFromSub(client) {
       `💥 Cannot fetch latest post from sub: \n\n${error}`,
     );
 
-    return false;
+    return [];
   }
 }
