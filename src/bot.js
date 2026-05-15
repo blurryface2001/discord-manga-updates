@@ -143,8 +143,8 @@ async function getLatestPosts() {
     const now = new Date().getTime() / 1000;
     const newPosts = await getLatestPostsFromSub(client, now);
     newPosts.forEach(async (post) => {
-      const postTitle = post.title;
-      const postUrl = post.permalink;
+      const postTitle = post.data.title;
+      const postUrl = post.data.permalink;
 
       const message = `<@786569518256226325> ⭐ New post Title: ${ 
         postTitle
