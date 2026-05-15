@@ -2,7 +2,7 @@ import config from '../../config.js';
 import fetch from 'node-fetch';
 import sendChannelMessage from '../../sendChannelMessage.js';
 
-export default async function getLatestPostsFromSub(client) {
+export default async function getLatestPostsFromSub(client, now) {
   const URLS = JSON.parse(process.env.SUB_URLS);
   const USER_AGENT = process.env.USER_AGENT;
 
@@ -55,9 +55,8 @@ export default async function getLatestPostsFromSub(client) {
       newPosts.push(...posts);
     }
 
-    const now = new Date().getTime() / 1000;
     // filter out only the posts made in last 12 seconds
-    const filteredPosts = newPosts.filter((p) => now - p.created_utc < 12);
+    const filteredPosts = newPosts.filter((p) => now - p.created_utc < 22);
 
     return filteredPosts;
   } catch (error) {
