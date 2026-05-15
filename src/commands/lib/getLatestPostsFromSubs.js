@@ -7,14 +7,8 @@ export default async function getLatestPostsFromSub(client, now) {
   const url = URLS[Math.floor(Math.random() * URLS.length)].url;
 
   try {
-    sendChannelMessage(
-      client,
-      '1504536098360135964',
-      `✅ Requesting latest sub posts from backend...`,
-    );
-
     const response = await fetch(
-      url,
+      `${url}/latest-giveaway-posts`,
       {
         headers: {
           Accept: 'application/json',
