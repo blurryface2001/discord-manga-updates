@@ -35,10 +35,16 @@ export default async function getLatestPostsFromSub(client, now) {
 
     const data = await response.json();
     const allPosts = data.posts || data;
+    const restrictedWords = json.parse(process.env.RESTRICTED_WORDS);
 
     const filteredPosts = allPosts.filter((p) => {
       const created = p.data?.created || p.created;
-      return (now - created) < 30;
+      const isItNew = now - created < 30;
+      // filter out certain posts if contains restricted words
+      const containsRestrictedWords = restrictedWords.some((word) =>
+        p.data.title.toLowerCase().includes(word.toLowerCase()),
+      );
+      return isItNew && !containsRestrictedWords;
     });
 
     return filteredPosts;
