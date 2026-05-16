@@ -35,7 +35,7 @@ export default async function getLatestPostsFromSub(client, now) {
 
     const data = await response.json();
     const allPosts = data.posts || data;
-    const restrictedWords = json.parse(process.env.RESTRICTED_WORDS);
+    const restrictedWords = JSON.parse(process.env.RESTRICTED_WORDS);
 
     const filteredPosts = allPosts.filter((p) => {
       const created = p.data?.created || p.created;
