@@ -37,8 +37,8 @@ export default async function getLatestPostsFromSub(client, now) {
     const allPosts = data.posts || data;
 
     const filteredPosts = allPosts.filter((p) => {
-      const created = p.created_utc || p.data?.created || p.created;
-      return now - created < 12;
+      const created = p.data?.created || p.created;
+      return (now - created) < 30;
     });
 
     return filteredPosts;
